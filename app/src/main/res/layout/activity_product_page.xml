@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProductPage">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="159dp"
+        android:layout_height="256dp"
+        tools:layout_editor_absoluteX="235dp"
+        tools:layout_editor_absoluteY="268dp" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="163dp"
+        android:layout_height="238dp"
+        android:background="@color/cardview_dark_background"
+        tools:layout_editor_absoluteX="237dp"
+        tools:layout_editor_absoluteY="16dp"
+
+        />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/go"
+        android:background="#8FB43A"
+        tools:layout_editor_absoluteX="272dp"
+        tools:layout_editor_absoluteY="539dp"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+
+        android:layout_width="204dp"
+
+        android:layout_height="322dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_launcher_background"
+
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="265dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="196dp"
+        android:layout_height="37dp"
+        android:text="Lorem ipsum dolor si €/kg"
+        tools:layout_editor_absoluteX="22dp"
+        tools:layout_editor_absoluteY="30dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="198dp"
+        android:layout_height="168dp"
+        android:text="Description :\nLorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem"
+        tools:layout_editor_absoluteX="22dp"
+        tools:layout_editor_absoluteY="81dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

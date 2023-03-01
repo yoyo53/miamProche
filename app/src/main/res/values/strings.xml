@@ -3,5 +3,6 @@
     <string name="main_edittext_name_text">Entrez votre nom</string>
     <string name="main_textview_greetings_text">Bienvenue chez MiamProche !</string>
     <string name="main_button_play_text">Confirmer</string>
+    <string name="go">Go ➡️</string>
 
 </resources>
