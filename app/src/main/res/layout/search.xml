@@ -17,20 +17,19 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <ImageButton
-            android:id="@+id/search_button"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="search_button"
-            android:src="?android:attr/actionModeWebSearchDrawable"
-            android:tint="#000000"
-            android:background="@null" />
+            android:iconifiedByDefault="false"
+            android:queryHint="Search"
+            android:layout_centerHorizontal="true" />
     </androidx.appcompat.widget.Toolbar>
 
-    <fragment
-        android:id="@+id/map_fragment"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

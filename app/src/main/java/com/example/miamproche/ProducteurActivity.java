@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class ProducteurActivity extends AppCompatActivity {
 
     private TextView mGreetingTextView;
     private EditText mNameEditText;
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_producteur);
 
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         mNameEditText = findViewById(R.id.main_edittext_name);
