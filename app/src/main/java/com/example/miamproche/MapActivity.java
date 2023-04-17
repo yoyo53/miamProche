@@ -16,8 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
-import android.util.Log;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,9 +38,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,7 +62,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private final int REQUEST_CHECK_SETTINGS = 2;
     private final int IMAGE_SIZE = 128;
     private final int BORDER = 3;
-    private FirebaseDatabase database;
     private DatabaseReference myRef;
 
 
@@ -76,27 +70,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        FirebaseApp.initializeApp(this);
-        database = FirebaseDatabase.getInstance(" https://miamproche-default-rtdb.europe-west1.firebasedatabase.app");
-        myRef = database.getReference();
-        myRef.child("Producteur").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("firebase results", String.valueOf(dataSnapshot.getValue()));
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    Log.d("firebase results 2", String.valueOf(child.getValue()));
-                }
-            }
+        myRef = FirebaseDatabase.getInstance(" https://miamproche-default-rtdb.europe-west1.firebasedatabase.app").getReference();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w("loadPost:onCancelled", databaseError.toException());
-            }
-        });
-
-
-        ImageButton button = findViewById(R.id.search_button);
-        button.setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
+        findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
+        findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));
 
         mExecutor = Executors.newSingleThreadExecutor();
         mHandler = new Handler(Looper.getMainLooper());
@@ -133,6 +110,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
+        mMap.setOnMarkerClickListener(marker -> {
+            startActivity(new Intent(this, ProductPage.class));
+            return false;
+        });
+        myRef.child("Produit").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    MarkerOptions options = new MarkerOptions().title(child.child("nom_produit").getValue(String.class));
+                    myRef.child("Producteur").child(String.valueOf(child.child("id_producteur").getValue(long.class))).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Double latitude = task.getResult().child("latitude").getValue(Double.class);
+                            Double longitude = task.getResult().child("longitude").getValue(Double.class);
+                            if (latitude != null && longitude != null) {
+                                options.position(new LatLng(latitude, longitude));
+                                addMarker(child.child("image_produit").getValue(String.class), options);
+                            }
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
 
         LatLng paris = new LatLng(48.86, 2.33);
         MarkerOptions options = new MarkerOptions().position(paris).title("yoyo53");
