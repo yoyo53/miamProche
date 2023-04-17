@@ -14,7 +14,7 @@ import java.util.List;
 public class SearchableActivity extends Activity {
     ListAdapter adapter;
 
-    List<String> arrayList= new ArrayList<>();
+    List<String> arrayList = new ArrayList<>();
 
 
     @Override
@@ -35,7 +35,7 @@ public class SearchableActivity extends Activity {
         arrayList.add("November");
         arrayList.add("December");
 
-        adapter= new ListAdapter(arrayList);
+        adapter = new ListAdapter(arrayList);
         ListView listView = findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         SearchView search = findViewById(R.id.searchView);
