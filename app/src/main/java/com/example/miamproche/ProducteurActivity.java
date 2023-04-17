@@ -42,9 +42,6 @@ public class ProducteurActivity extends AppCompatActivity {
         // Récupérer une référence vers un nœud dans la base de données
         myRef = database.getReference("utilisateurs/lalala/test2");
 
-        // Écrire des données dans la base de données
-        myRef.setValue("c'est un test");
-
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         mNameEditText = findViewById(R.id.main_edittext_name);
         mPlayButton = findViewById(R.id.main_button);
