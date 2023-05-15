@@ -70,7 +70,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        myRef = FirebaseDatabase.getInstance(" https://miamproche-default-rtdb.europe-west1.firebasedatabase.app").getReference();
+        myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
         findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
         findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));

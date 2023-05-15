@@ -14,8 +14,6 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:padding="8dp"
-        android:text="   Producer Description
-                     "
         app:layout_constraintBottom_toBottomOf="@+id/main_edittext_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,6 +39,7 @@
         android:layout_marginStart="300dp"
         android:layout_marginBottom="145dp"
         android:text="ADD"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/main_edittext_name"
         app:layout_constraintHorizontal_bias="0.0"
