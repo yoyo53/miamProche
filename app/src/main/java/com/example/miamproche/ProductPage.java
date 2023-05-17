@@ -28,6 +28,9 @@ public class ProductPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String productID = getIntent().getStringExtra("productID");
+
         setContentView(R.layout.activity_product_page);
         try {
             set_img_url(R.id.product_img, "https://blog-images-1.pharmeasy.in/blog/production/wp-content/uploads/2021/04/23175719/shutterstock_440493100-1.jpg");

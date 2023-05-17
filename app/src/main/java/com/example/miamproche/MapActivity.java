@@ -6,14 +6,13 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 
@@ -23,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -37,23 +39,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private ExecutorService mExecutor;
-    private Handler mHandler;
     private FusedLocationProviderClient mLocationProvider;
     private LocationRequest mRequest;
     private LocationCallback mLocationCallback;
@@ -62,7 +60,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private final int REQUEST_CHECK_SETTINGS = 2;
     private final int IMAGE_SIZE = 128;
     private final int BORDER = 3;
-    private DatabaseReference myRef;
+    private DatabaseReference dbRef;
+    private StorageReference storageRef ;
+
 
 
     @Override
@@ -70,13 +70,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
+        dbRef = FirebaseDatabase.getInstance().getReference();
+        storageRef = FirebaseStorage.getInstance().getReference();
 
         findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
         findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));
 
-        mExecutor = Executors.newSingleThreadExecutor();
-        mHandler = new Handler(Looper.getMainLooper());
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
         mLocationCallback = new LocationCallback() {};
 
@@ -100,10 +99,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         cvs.drawPath(path, paint);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-        runOnUiThread(() -> {
-            if (mapFragment != null)
-                mapFragment.getMapAsync(this);
-        });
+        if (mapFragment != null)
+            mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -111,21 +108,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap = googleMap;
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
         mMap.setOnMarkerClickListener(marker -> {
-            startActivity(new Intent(this, ProductPage.class));
+            Intent intent = new Intent(this, ProductPage.class);
+            intent.putExtra("productID", (String) marker.getTag());
+            startActivity(intent);
             return false;
         });
-        myRef.child("Produit").addValueEventListener(new ValueEventListener() {
+
+        dbRef.child("Produit").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                StorageReference storageProduits = storageRef.child("Produits");
+                DatabaseReference dbProducteurs = dbRef.child("Producteur");
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     MarkerOptions options = new MarkerOptions().title(child.child("nom_produit").getValue(String.class));
-                    myRef.child("Producteur").child(String.valueOf(child.child("id_producteur").getValue(long.class))).get().addOnCompleteListener(task -> {
+                    dbProducteurs.child(String.valueOf(child.child("id_producteur").getValue(long.class))).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Double latitude = task.getResult().child("latitude").getValue(Double.class);
                             Double longitude = task.getResult().child("longitude").getValue(Double.class);
-                            if (latitude != null && longitude != null) {
+                            if (latitude != null && longitude != null && child.getKey() != null) {
                                 options.position(new LatLng(latitude, longitude));
-                                addMarker(child.child("image_produit").getValue(String.class), options);
+                                storageProduits.child(child.getKey()).getDownloadUrl()
+                                        .addOnSuccessListener(url -> addMarker(url.toString(), options, child.getKey()))
+                                        .addOnFailureListener(exception -> System.out.println("error " + child.getKey())
+                                        );
                             }
                         }
                     });
@@ -135,10 +140,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        LatLng paris = new LatLng(48.86, 2.33);
-        MarkerOptions options = new MarkerOptions().position(paris).title("yoyo53");
-        addMarker("https://cdn.discordapp.com/icons/640609774823538688/794e2c583d99b516a9cb51a5a95a49a6.webp?size=256", options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paris, 10));
 
         mRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build();
 
@@ -182,27 +183,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void addMarker(final String url, final MarkerOptions options) {
-        mExecutor.execute(() -> {
-            HttpURLConnection conn = null;
-            try {
-                conn = (HttpURLConnection) new URL(url).openConnection();
-                conn.setDoInput(true);
-                conn.connect();
-                Bitmap image = BitmapFactory.decodeStream(conn.getInputStream());
-
+    private void addMarker(final String url, final MarkerOptions options, final String productID) {
+        Glide.with(this).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 Bitmap marker_bmp = mMarkerBmp.copy(mMarkerBmp.getConfig(), true);
-                image = Bitmap.createScaledBitmap(image, IMAGE_SIZE, IMAGE_SIZE, false);
+                Bitmap image = Bitmap.createScaledBitmap(resource, IMAGE_SIZE, IMAGE_SIZE, false);
                 new Canvas(marker_bmp).drawBitmap(image, 2 * BORDER, 2 * BORDER, null);
-
                 MarkerOptions result = options.icon(BitmapDescriptorFactory.fromBitmap(marker_bmp));
-                mHandler.post(() -> mMap.addMarker(result));
+                Marker marker = mMap.addMarker(result);
+                if (marker != null) {
+                    marker.setTag(productID);
+                }
             }
-            catch (Exception ignored) {}
-            finally {
-                if (conn != null)
-                    conn.disconnect();
-            }
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {}
         });
     }
 
@@ -221,7 +216,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
 
             mLocationProvider.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                    .addOnSuccessListener(loc -> mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 20)));
+                    .addOnSuccessListener(loc -> mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 12)));
         }
     }
 
@@ -229,7 +224,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (REQUEST_CHECK_SETTINGS == requestCode) {
-            checkLocationPermissions();
+            if (resultCode == -1) {
+                checkLocationPermissions();
+            }
+            else {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.7887217, 2.3611764), 12));
+            }
         }
     }
 
@@ -239,6 +239,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (requestCode == MY_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 activateLocation();
+            }
+            else {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.7887217, 2.3611764), 12));
             }
         }
     }
