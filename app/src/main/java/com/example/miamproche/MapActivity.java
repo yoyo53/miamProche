@@ -42,12 +42,9 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -61,9 +58,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private final int IMAGE_SIZE = 128;
     private final int BORDER = 3;
     private DatabaseReference dbRef;
-    private StorageReference storageRef ;
-
-
+    private final String bucket = FirebaseStorage.getInstance().getReference().getBucket();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +66,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         dbRef = FirebaseDatabase.getInstance().getReference();
-        storageRef = FirebaseStorage.getInstance().getReference();
 
         findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
         findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));
@@ -114,32 +108,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             return false;
         });
 
-        dbRef.child("Produit").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StorageReference storageProduits = storageRef.child("Produits");
-                DatabaseReference dbProducteurs = dbRef.child("Producteur");
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    MarkerOptions options = new MarkerOptions().title(child.child("nom_produit").getValue(String.class));
-                    dbProducteurs.child(String.valueOf(child.child("id_producteur").getValue(long.class))).get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Double latitude = task.getResult().child("latitude").getValue(Double.class);
-                            Double longitude = task.getResult().child("longitude").getValue(Double.class);
-                            if (latitude != null && longitude != null && child.getKey() != null) {
-                                options.position(new LatLng(latitude, longitude));
-                                storageProduits.child(child.getKey()).getDownloadUrl()
-                                        .addOnSuccessListener(url -> addMarker(url.toString(), options, child.getKey()))
-                                        .addOnFailureListener(exception -> System.out.println("error " + child.getKey())
-                                        );
-                            }
-                        }
-                    });
+        dbRef.get().addOnSuccessListener(result -> {
+            for(DataSnapshot produit : result.child("Produit").getChildren()){
+                MarkerOptions options = new MarkerOptions().title(produit.child("nom_produit").getValue(String.class));
+                DataSnapshot producteur = result.child("Producteur").child(String.valueOf(produit.child("id_producteur").getValue(Long.class)));
+                Double latitude = producteur.child("latitude").getValue(Double.class);
+                Double longitude = producteur.child("longitude").getValue(Double.class);
+                String productID = String.valueOf(produit.child("id_produit").getValue(Long.class));
+                if (latitude != null && longitude != null) {
+                    options.position(new LatLng(latitude, longitude));
+                    addMarker(options, productID);
                 }
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-
 
         mRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build();
 
@@ -183,8 +164,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void addMarker(final String url, final MarkerOptions options, final String productID) {
-        Glide.with(this).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
+    private void addMarker(final MarkerOptions options, final String productID) {
+        Glide.with(this).asBitmap().load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Produits%2F" + productID + "?alt=media").into(new CustomTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 Bitmap marker_bmp = mMarkerBmp.copy(mMarkerBmp.getConfig(), true);
