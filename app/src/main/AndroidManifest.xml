@@ -26,6 +26,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".RegisterPage"
+            android:exported="false" />
+        <activity
             android:name=".ProducteurActivity"
             android:exported="false" />
         <activity

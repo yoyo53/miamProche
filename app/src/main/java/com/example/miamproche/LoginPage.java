@@ -29,12 +29,15 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        myRef = FirebaseDatabase.getInstance(" https://miamproche-default-rtdb.europe-west1.firebasedatabase.app").getReference();
+        myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
         TextView email = (TextView) findViewById(R.id.email);
         TextView password = (TextView) findViewById(R.id.password);
+        TextView register = (TextView) findViewById(R.id.register2);
 
         MaterialButton loginbtn = (MaterialButton) findViewById(R.id.loginbtn);
+
+        register.setOnClickListener(view -> startActivity(new Intent(LoginPage.this, RegisterPage.class)));
 
         loginbtn.setOnClickListener(view -> myRef.child("Utilisateur").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
