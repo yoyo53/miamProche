@@ -10,7 +10,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -46,9 +50,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
+    private ArrayList<LatLng> mLocations = new ArrayList<>();
     private FusedLocationProviderClient mLocationProvider;
     private LocationRequest mRequest;
     private LocationCallback mLocationCallback;
@@ -81,13 +89,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2 * BORDER);
-        cvs.drawRect(BORDER, BORDER, square_size - BORDER, square_size - BORDER, paint);
+        cvs.drawCircle(square_size / 2f, square_size / 2f, square_size / 2f - BORDER, paint);
 
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
         Path path = new Path();
-        path.lineTo((float) square_size / 2 - 10, square_size);
-        path.lineTo((float) square_size / 2 + 10, square_size);
+        path.lineTo((float) square_size / 2 - 15, square_size - 10);
+        path.lineTo((float) square_size / 2 + 15, square_size - 10);
         path.lineTo((float) square_size / 2, square_size + arrow_height);
         path.close();
         cvs.drawPath(path, paint);
@@ -110,13 +118,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         dbRef.get().addOnSuccessListener(result -> {
             for(DataSnapshot produit : result.child("Produit").getChildren()){
-                MarkerOptions options = new MarkerOptions().title(produit.child("nom_produit").getValue(String.class));
                 DataSnapshot producteur = result.child("Producteur").child(String.valueOf(produit.child("id_producteur").getValue(Long.class)));
                 Double latitude = producteur.child("latitude").getValue(Double.class);
                 Double longitude = producteur.child("longitude").getValue(Double.class);
                 String productID = String.valueOf(produit.child("id_produit").getValue(Long.class));
                 if (latitude != null && longitude != null) {
-                    options.position(new LatLng(latitude, longitude));
+                    LatLng location = new LatLng(latitude, longitude);
+                    while (mLocations.contains(location)) {
+                        location = new LatLng(location.latitude + 0.00002, location.longitude + 0.00002);
+                    }
+                    MarkerOptions options = new MarkerOptions().position(location);
+                    mLocations.add(location);
                     addMarker(options, productID);
                 }
             }
@@ -169,8 +181,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 Bitmap marker_bmp = mMarkerBmp.copy(mMarkerBmp.getConfig(), true);
-                Bitmap image = Bitmap.createScaledBitmap(resource, IMAGE_SIZE, IMAGE_SIZE, false);
-                new Canvas(marker_bmp).drawBitmap(image, 2 * BORDER, 2 * BORDER, null);
+                Bitmap image = resource;
+                int size = Math.min(image.getWidth(), image.getHeight()), x_offset = (image.getWidth() - size) / 2, y_offset = (image.getHeight() - size) / 2;
+                image = Bitmap.createBitmap(image, x_offset, y_offset, size + x_offset, size + y_offset);
+                image = Bitmap.createScaledBitmap(image, IMAGE_SIZE, IMAGE_SIZE, false);
+
+                Bitmap circle_bmp = Bitmap.createBitmap(IMAGE_SIZE, IMAGE_SIZE, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(circle_bmp);
+                Paint paint = new Paint();
+                paint.setAntiAlias(true);
+                canvas.drawARGB(0, 0, 0, 0);
+                canvas.drawCircle(IMAGE_SIZE / 2f, IMAGE_SIZE / 2f, IMAGE_SIZE / 2f, paint);
+                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                canvas.drawBitmap(image, 0, 0, paint);
+                new Canvas(marker_bmp).drawBitmap(circle_bmp, 2 * BORDER, 2 * BORDER, null);
                 MarkerOptions result = options.icon(BitmapDescriptorFactory.fromBitmap(marker_bmp));
                 Marker marker = mMap.addMarker(result);
                 if (marker != null) {
