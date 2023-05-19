@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,46 +61,52 @@ public class RegisterPage extends AppCompatActivity {
                 String userEmail = email.getText().toString();
                 String userPassword = password.getText().toString();
 
-                myRef.child("Utilisateur").orderByChild("email").equalTo(userEmail).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            Toast.makeText(RegisterPage.this, "Email already exists", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            try {
-                                // Calculate the MD5 hash of the password
-                                MessageDigest md = MessageDigest.getInstance("MD5");
-                                byte[] hash = md.digest(userPassword.getBytes(StandardCharsets.UTF_8));
+                if (TextUtils.isEmpty(userFname) || TextUtils.isEmpty(userLname) || TextUtils.isEmpty(userEmail) || TextUtils.isEmpty(userPassword)){
+                    Toast.makeText(RegisterPage.this, "Registration not successful", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    myRef.child("Utilisateur").orderByChild("email").equalTo(userEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                Toast.makeText(RegisterPage.this, "Email already exists", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                try {
+                                    // Calculate the MD5 hash of the password
+                                    MessageDigest md = MessageDigest.getInstance("MD5");
+                                    byte[] hash = md.digest(userPassword.getBytes(StandardCharsets.UTF_8));
 
-                                // Convert the hash to a hexadecimal string
-                                StringBuilder hexString = new StringBuilder();
-                                for (byte b : hash) {
-                                    String hex = Integer.toHexString(0xff & b);
-                                    if (hex.length() == 1) hexString.append('0');
-                                    hexString.append(hex);
+                                    // Convert the hash to a hexadecimal string
+                                    StringBuilder hexString = new StringBuilder();
+                                    for (byte b : hash) {
+                                        String hex = Integer.toHexString(0xff & b);
+                                        if (hex.length() == 1) hexString.append('0');
+                                        hexString.append(hex);
+                                    }
+
+                                    // Store the user details in the database
+                                    DatabaseReference userRef = myRef.child("Utilisateur").child(String.valueOf(currentid));
+                                    userRef.child("prenom").setValue(userFname);
+                                    userRef.child("nom").setValue(userLname);
+                                    userRef.child("email").setValue(userEmail);
+                                    userRef.child("mdp").setValue(hexString.toString());
+                                    userRef.child("id_utilisateur").setValue(currentid);
+
+                                    Toast.makeText(RegisterPage.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(RegisterPage.this, LoginPage.class));
+                                } catch (NoSuchAlgorithmException e) {
+                                    throw new RuntimeException("MD5 is not available", e);
                                 }
-
-                                // Store the user details in the database
-                                DatabaseReference userRef = myRef.child("Utilisateur").child(String.valueOf(currentid));
-                                userRef.child("prenom").setValue(userFname);
-                                userRef.child("nom").setValue(userLname);
-                                userRef.child("email").setValue(userEmail);
-                                userRef.child("mdp").setValue(hexString.toString());
-
-                                Toast.makeText(RegisterPage.this, "Registration successful", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(RegisterPage.this, LoginPage.class));
-                            } catch (NoSuchAlgorithmException e) {
-                                throw new RuntimeException("MD5 is not available", e);
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        // handle error
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            // handle error
+                        }
+                    });
+                }
             }
         });
     }

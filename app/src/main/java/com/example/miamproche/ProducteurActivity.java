@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -113,7 +114,8 @@ public class ProducteurActivity extends AppCompatActivity {
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
-        String idProducteur = "112";
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String idProducteur = prefs.getString("id", "1");
         getDescriptionById(idProducteur);
         getProductNameByProductId(idProducteur);
 
