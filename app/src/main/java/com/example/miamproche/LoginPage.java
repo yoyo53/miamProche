@@ -66,7 +66,7 @@ public class LoginPage extends AppCompatActivity {
                                 Toast.makeText(LoginPage.this, "LOGIN SUCESSFULL", Toast.LENGTH_SHORT).show();
                                 Integer idUtilisateur = child.child("id_utilisateur").getValue(Integer.class);
 
-                                // Query la table "Producteur" table basé sur l'id_utilisateur
+                                // Query the "Producteur" table based on the email
                                 DatabaseReference producteurRef = myRef.child("Producteur");
                                 Query producteurQuery = producteurRef.orderByChild("id_utilisateur").equalTo(idUtilisateur);
 
@@ -80,14 +80,13 @@ public class LoginPage extends AppCompatActivity {
                                                 editor.putString("id", String.valueOf(idProducteur));
                                                 editor.apply();
                                                 if (idProducteur != null) {
-                                                    System.out.println("ID Producteur: " + String.valueOf(idProducteur));
                                                     startActivity(new Intent(LoginPage.this, MapActivity.class));
                                                 } else {
                                                     System.out.println("ID Producteur not found");
                                                 }
                                             }
                                         } else {
-                                            System.out.println("Producteur not found");
+                                            startActivity(new Intent(LoginPage.this, MapActivity.class));
                                         }
                                     }
 
