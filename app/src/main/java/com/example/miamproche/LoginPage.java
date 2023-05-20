@@ -43,9 +43,11 @@ public class LoginPage extends AppCompatActivity {
 
         loginbtn.setOnClickListener(view -> myRef.child("Utilisateur").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                boolean isLoginSuccessful = false;
                 for(DataSnapshot child: task.getResult().getChildren()){
                     String semail = child.child("email").getValue(String.class);
                     if(email.getText().toString().equals(semail)){
+                        isLoginSuccessful = true;
                         String pwd = password.getText().toString();
                         String mdp = child.child("mdp").getValue(String.class);
                         try {
@@ -97,13 +99,16 @@ public class LoginPage extends AppCompatActivity {
                                 });
                             }
                             else{
-                                Toast.makeText(LoginPage.this, "LOGIN FAILED", Toast.LENGTH_SHORT).show();
+                                isLoginSuccessful = false;
                             }
                         } catch (NoSuchAlgorithmException e) {
                             // Cette exception ne devrait jamais être lancée car MD5 est toujours disponible
                             throw new RuntimeException("MD5 n'est pas disponible", e);
                         }
                     }
+                }
+                if (!isLoginSuccessful){
+                    Toast.makeText(LoginPage.this, "LOGIN FAILED", Toast.LENGTH_SHORT).show();
                 }
             }
         }));
