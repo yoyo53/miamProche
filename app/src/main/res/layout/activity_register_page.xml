@@ -1,283 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
     tools:context=".LoginPage">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/signin"
-        android:text="S'inscrire"
-        android:textColor="@color/black"
-        android:textSize="35dp"
-        android:textStyle="bold"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signin"
+            android:text="S'inscrire"
+            android:textColor="@color/black"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="60dp"
+            android:gravity="center" />
 
-    <EditText
-        android:id="@+id/fname"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@id/signin"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="15dp"
-        android:background="#30ffffff"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:drawablePadding="20dp"
-        android:hint="Prénom"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/fname"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:drawablePadding="20dp"
+            android:hint="Prénom"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:autofillHints="name"
+            android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/lname"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@id/fname"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="15dp"
-        android:background="#30ffffff"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:drawablePadding="20dp"
-        android:hint="Nom"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/lname"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:drawablePadding="20dp"
+            android:hint="Nom"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:autofillHints="name"
+            android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@id/lname"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="15dp"
-        android:background="#30ffffff"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:drawablePadding="20dp"
-        android:hint="Email"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:drawablePadding="20dp"
+            android:hint="Email"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:autofillHints="emailAddress"
+            android:inputType="textEmailAddress" />
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@id/email"
-        android:layout_margin="15dp"
-        android:background="#30ffffff"
-        android:drawableLeft="@drawable/baseline_password_24"
-        android:drawablePadding="20dp"
-        android:padding="20dp"
-        android:hint="Mot de passe"
-        android:inputType="textPassword"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        />
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawableStart="@drawable/baseline_password_24"
+            android:drawablePadding="20dp"
+            android:padding="20dp"
+            android:hint="Mot de passe"
+            android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:importantForAutofill="no" />
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn"
-            android:layout_below="@+id/password"
             android:text="Sélectionner une photo"
             android:backgroundTint="@color/design_default_color_secondary"
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="5dp" />
 
-            />
-
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn"
-        android:text="S'inscrire en temps que producteur" />
-
-
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@+id/checkbox"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#30ffffff"
-        android:drawablePadding="20dp"
-        android:hint="A propos de vous"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        />
-
-
-
-    <EditText
-        android:id="@+id/telephone"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@+id/description"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#30ffffff"
-        android:drawablePadding="20dp"
-        android:hint="Telephone"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        />
-
-    <EditText
-        android:id="@+id/adresse"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@+id/telephone"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#30ffffff"
-        android:drawablePadding="20dp"
-        android:hint="Adresse"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        />
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S'inscrire en temps que producteur" />
 
         <EditText
-            android:id="@+id/code_postal"
-            android:layout_width="380dp"
+            android:id="@+id/description"
+            android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:layout_below="@+id/adresse"
             android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:background="#30ffffff"
             android:drawablePadding="20dp"
-            android:hint="Code postal"
-            android:drawableLeft="@drawable/baseline_person_24"
+            android:hint="A propos de vous"
+            android:drawableStart="@drawable/baseline_person_24"
             android:padding="20dp"
             android:textColor="@color/black"
             android:textColorHint="#CCCCCC"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:visibility="gone"
-            />
+            android:importantForAutofill="no"
+            android:inputType="text|textCapSentences" />
 
-    <EditText
-        android:id="@+id/ville"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@+id/code_postal"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#30ffffff"
-        android:drawablePadding="20dp"
-        android:hint="Ville"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        />
+        <EditText
+            android:id="@+id/telephone"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawablePadding="20dp"
+            android:hint="Téléphone"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:autofillHints="phone"
+            android:inputType="phone" />
 
-    <EditText
-        android:id="@+id/pays"
-        android:layout_width="380dp"
-        android:layout_height="65dp"
-        android:layout_below="@+id/ville"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#30ffffff"
-        android:drawablePadding="20dp"
-        android:hint="Pays"
-        android:drawableLeft="@drawable/baseline_person_24"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#CCCCCC"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        />
+        <EditText
+            android:id="@+id/adresse"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawablePadding="20dp"
+            android:hint="Adresse"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:autofillHints="postalAddress"
+            android:inputType="textPostalAddress" />
 
+        <EditText
+            android:id="@+id/code_postal"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawablePadding="20dp"
+            android:hint="Code postal"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:autofillHints="postalCode"
+            android:inputType="text|textCapCharacters" />
 
+        <EditText
+            android:id="@+id/ville"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawablePadding="20dp"
+            android:hint="Ville"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:autofillHints="city"
+            android:inputType="text|textCapWords" />
 
+        <EditText
+            android:id="@+id/pays"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_margin="15dp"
+            android:background="#30ffffff"
+            android:drawablePadding="20dp"
+            android:hint="Pays"
+            android:drawableStart="@drawable/baseline_person_24"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:autofillHints="country"
+            android:inputType="text|textCapWords" />
 
-
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/register_btn"
-        android:layout_below="@+id/pays"
-        android:text="S'inscrire"
-        android:backgroundTint="@color/design_default_color_secondary"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-
-        />
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/register_btn"
+            android:text="S'inscrire"
+            android:backgroundTint="@color/design_default_color_secondary"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp" />
     </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+</ScrollView>

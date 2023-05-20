@@ -89,16 +89,11 @@ public class RegisterPage extends AppCompatActivity {
 
 
 
-        ((Button) findViewById(R.id.btn))
-                .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        Intent intent = new Intent();
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent,
-                                "Select Picture"), SELECT_PICTURE);
-                    }
-
+        findViewById(R.id.btn).setOnClickListener(arg0 -> {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
                 });
 
 
@@ -154,24 +149,21 @@ public class RegisterPage extends AppCompatActivity {
 
 
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    editText_description.setVisibility(View.VISIBLE);
-                    editText_adresse.setVisibility(View.VISIBLE);
-                    editText_ville.setVisibility(View.VISIBLE);
-                    editText_pays.setVisibility(View.VISIBLE);
-                    editText_telephone.setVisibility(View.VISIBLE);
-                    editText_code_postal.setVisibility(View.VISIBLE);
-                } else {
-                    editText_description.setVisibility(View.GONE);
-                    editText_adresse.setVisibility(View.GONE);
-                    editText_ville.setVisibility(View.GONE);
-                    editText_pays.setVisibility(View.GONE);
-                    editText_telephone.setVisibility(View.GONE);
-                    editText_code_postal.setVisibility(View.GONE);
-                }
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                editText_description.setVisibility(View.VISIBLE);
+                editText_adresse.setVisibility(View.VISIBLE);
+                editText_ville.setVisibility(View.VISIBLE);
+                editText_pays.setVisibility(View.VISIBLE);
+                editText_telephone.setVisibility(View.VISIBLE);
+                editText_code_postal.setVisibility(View.VISIBLE);
+            } else {
+                editText_description.setVisibility(View.GONE);
+                editText_adresse.setVisibility(View.GONE);
+                editText_ville.setVisibility(View.GONE);
+                editText_pays.setVisibility(View.GONE);
+                editText_telephone.setVisibility(View.GONE);
+                editText_code_postal.setVisibility(View.GONE);
             }
         });
 
@@ -232,7 +224,7 @@ public class RegisterPage extends AppCompatActivity {
                                     System.out.println("yooooooooooooo");
                                     Geocoder geocoder = new Geocoder(RegisterPage.this);
                                     String address = adresse+" "+code_postal+" "+ ville + " "+ pays;
-                                    List<Address> addressList = null;
+                                    List<Address> addressList;
 
                                     try {
                                         addressList =geocoder.getFromLocationName(address, 1);

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +17,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 
@@ -33,11 +31,11 @@ public class LoginPage extends AppCompatActivity {
 
         myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
-        TextView email = (TextView) findViewById(R.id.email);
-        TextView password = (TextView) findViewById(R.id.password);
-        TextView register = (TextView) findViewById(R.id.register2);
+        TextView email = findViewById(R.id.email);
+        TextView password = findViewById(R.id.password);
+        TextView register = findViewById(R.id.register2);
 
-        MaterialButton loginbtn = (MaterialButton) findViewById(R.id.loginbtn);
+        MaterialButton loginbtn = findViewById(R.id.loginbtn);
 
         register.setOnClickListener(view -> startActivity(new Intent(LoginPage.this, RegisterPage.class)));
 
@@ -64,43 +62,47 @@ public class LoginPage extends AppCompatActivity {
                                 if (hex.length() == 1) hexString.append('0');
                                 hexString.append(hex);
                             }
-                            if (mdp.equals(hexString.toString())){
-                                Toast.makeText(LoginPage.this, "LOGIN SUCESSFULL", Toast.LENGTH_SHORT).show();
+                            if (hexString.toString().equals(mdp)){
                                 Integer idUtilisateur = child.child("id_utilisateur").getValue(Integer.class);
+                                if (idUtilisateur != null) {
+                                    Toast.makeText(LoginPage.this, "LOGIN SUCESSFULL", Toast.LENGTH_SHORT).show();
+                                    // Query the "Producteur" table based on the email
+                                    DatabaseReference producteurRef = myRef.child("Producteur");
+                                    Query producteurQuery = producteurRef.orderByChild("id_utilisateur").equalTo(idUtilisateur);
 
-                                // Query the "Producteur" table based on the email
-                                DatabaseReference producteurRef = myRef.child("Producteur");
-                                Query producteurQuery = producteurRef.orderByChild("id_utilisateur").equalTo(idUtilisateur);
-
-                                producteurQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            for (DataSnapshot producteurSnapshot : dataSnapshot.getChildren()) {
-                                                Integer idProducteur = producteurSnapshot.child("id_producteur").getValue(Integer.class);
+                                    producteurQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+                                                for (DataSnapshot producteurSnapshot : dataSnapshot.getChildren()) {
+                                                    Integer idProducteur = producteurSnapshot.child("id_producteur").getValue(Integer.class);
+                                                    SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+                                                    editor.putString("id", String.valueOf(idProducteur));
+                                                    editor.apply();
+                                                    if (idProducteur != null) {
+                                                        startActivity(new Intent(LoginPage.this, MapActivity.class));
+                                                    } else {
+                                                        System.out.println("ID Producteur not found");
+                                                    }
+                                                }
+                                            } else {
+                                                Integer idProducteur = -1;
                                                 SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
                                                 editor.putString("id", String.valueOf(idProducteur));
                                                 editor.apply();
-                                                if (idProducteur != null) {
-                                                    startActivity(new Intent(LoginPage.this, MapActivity.class));
-                                                } else {
-                                                    System.out.println("ID Producteur not found");
-                                                }
+                                                startActivity(new Intent(LoginPage.this, MapActivity.class));
                                             }
-                                        } else {
-                                            Integer idProducteur = -1;
-                                            SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
-                                            editor.putString("id", String.valueOf(idProducteur));
-                                            editor.apply();
-                                            startActivity(new Intent(LoginPage.this, MapActivity.class));
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        // Handle any potential errors
-                                    }
-                                });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            // Handle any potential errors
+                                        }
+                                    });
+                                }
+                                else {
+                                    isLoginSuccessful = false;
+                                }
                             }
                             else{
                                 isLoginSuccessful = false;

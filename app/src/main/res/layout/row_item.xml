@@ -7,7 +7,8 @@
         android:id="@+id/product_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_margin="5dp" />
+        android:layout_margin="5dp"
+        android:contentDescription="Photo du produit" />
 
     <TextView
         android:id="@+id/product_name"
