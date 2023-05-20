@@ -88,6 +88,10 @@ public class LoginPage extends AppCompatActivity {
                                                 }
                                             }
                                         } else {
+                                            Integer idProducteur = -1;
+                                            SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+                                            editor.putString("id", String.valueOf(idProducteur));
+                                            editor.apply();
                                             startActivity(new Intent(LoginPage.this, MapActivity.class));
                                         }
                                     }

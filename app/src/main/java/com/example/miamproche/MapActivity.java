@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +18,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -73,7 +75,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         dbRef = FirebaseDatabase.getInstance().getReference();
 
         findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
-        findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));
+
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String idProducteur = prefs.getString("id", "-1");
+
+        if (idProducteur.equals("-1")){
+            findViewById(R.id.settings_button).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.settings_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));
+        }
 
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
         mLocationCallback = new LocationCallback() {};
