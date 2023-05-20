@@ -242,7 +242,6 @@ public class RegisterPage extends AppCompatActivity {
                                             producteurRef.child("latitude").setValue(latitude);
                                             producteurRef.child("ville").setValue(ville);
                                             producteurRef.child("pays").setValue(pays);
-                                            producteurRef.child("pays").setValue(pays);
                                             producteurRef.child("id_producteur").setValue(currentid_producteur);
                                             producteurRef.child("id_utilisateur").setValue(currentid);
                                         }
