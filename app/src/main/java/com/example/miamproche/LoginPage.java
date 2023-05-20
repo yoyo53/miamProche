@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -15,21 +15,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.io.FileInputStream;
-import java.io.InputStream;
+
 public class LoginPage extends AppCompatActivity {
 
     private DatabaseReference myRef;
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +43,11 @@ public class LoginPage extends AppCompatActivity {
 
         loginbtn.setOnClickListener(view -> myRef.child("Utilisateur").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-
                 for(DataSnapshot child: task.getResult().getChildren()){
                     String semail = child.child("email").getValue(String.class);
-                    System.out.println("test1");
-                    System.out.println(semail);
-                    System.out.println(email.getText().toString());
                     if(email.getText().toString().equals(semail)){
                         String pwd = password.getText().toString();
                         String mdp = child.child("mdp").getValue(String.class);
-                        System.out.println("test");
                         try {
                             // Obtenir une instance de MessageDigest pour l'algorithme MD5
                             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -72,10 +62,39 @@ public class LoginPage extends AppCompatActivity {
                                 if (hex.length() == 1) hexString.append('0');
                                 hexString.append(hex);
                             }
-                            System.out.println("test3");
                             if (mdp.equals(hexString.toString())){
                                 Toast.makeText(LoginPage.this, "LOGIN SUCESSFULL", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginPage.this, MapActivity.class));
+                                Integer idUtilisateur = child.child("id_utilisateur").getValue(Integer.class);
+
+                                // Query the "Producteur" table based on the email
+                                DatabaseReference producteurRef = myRef.child("Producteur");
+                                Query producteurQuery = producteurRef.orderByChild("id_utilisateur").equalTo(idUtilisateur);
+
+                                producteurQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            for (DataSnapshot producteurSnapshot : dataSnapshot.getChildren()) {
+                                                Integer idProducteur = producteurSnapshot.child("id_producteur").getValue(Integer.class);
+                                                SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+                                                editor.putString("id", String.valueOf(idProducteur));
+                                                editor.apply();
+                                                if (idProducteur != null) {
+                                                    startActivity(new Intent(LoginPage.this, MapActivity.class));
+                                                } else {
+                                                    System.out.println("ID Producteur not found");
+                                                }
+                                            }
+                                        } else {
+                                            startActivity(new Intent(LoginPage.this, MapActivity.class));
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        // Handle any potential errors
+                                    }
+                                });
                             }
                             else{
                                 Toast.makeText(LoginPage.this, "LOGIN FAILED", Toast.LENGTH_SHORT).show();

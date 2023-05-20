@@ -12,9 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -51,12 +49,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private ArrayList<LatLng> mLocations = new ArrayList<>();
+    private final ArrayList<LatLng> mLocations = new ArrayList<>();
     private FusedLocationProviderClient mLocationProvider;
     private LocationRequest mRequest;
     private LocationCallback mLocationCallback;
@@ -124,8 +121,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 String productID = String.valueOf(produit.child("id_produit").getValue(Long.class));
                 if (latitude != null && longitude != null) {
                     LatLng location = new LatLng(latitude, longitude);
+                    int i = 1;
                     while (mLocations.contains(location)) {
-                        location = new LatLng(location.latitude + 0.00002, location.longitude + 0.00002);
+                        location = new LatLng(latitude + i * 0.0002, longitude + i * 0.0002);
+                        if (!mLocations.contains(location)) {break;}
+                        location = new LatLng(latitude + i * 0.0002, longitude);
+                        if (!mLocations.contains(location)) {break;}
+                        location = new LatLng(latitude + i * 0.0002, longitude - i * 0.0002);
+                        if (!mLocations.contains(location)) {break;}
+                        location = new LatLng(latitude, longitude - i * 0.0002);
+                        if (!mLocations.contains(location)) {break;}
+                        location = new LatLng(latitude, longitude + i * 0.0002);
+                        if (!mLocations.contains(location)) {break;}
+                        location = new LatLng(latitude - i * 0.0002, longitude - i * 0.0002);
+                        if (!mLocations.contains(location)) {break;}
+                        location = new LatLng(latitude - i * 0.0002, longitude);
+                        if (!mLocations.contains(location)) {break;}
+                        location = new LatLng(latitude - i * 0.0002, longitude + i * 0.0002);
+                        i++;
                     }
                     MarkerOptions options = new MarkerOptions().position(location);
                     mLocations.add(location);

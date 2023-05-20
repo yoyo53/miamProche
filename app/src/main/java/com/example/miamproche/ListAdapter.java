@@ -11,16 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ListAdapter extends BaseAdapter {
     DataSnapshot mData;
     List<DataSnapshot> mFilteredData;
     Activity mActivity;
+    LatLng mLocation = new LatLng(48.7887217, 2.361176);
     private LayoutInflater inflater;
     private final String bucket = FirebaseStorage.getInstance().getReference().getBucket();
 
@@ -45,6 +48,19 @@ public class ListAdapter extends BaseAdapter {
         return position;
     }
 
+    public double getDistance(DataSnapshot product) {
+        DataSnapshot producteur = mData.child("Producteur").child(String.valueOf(product.child("id_producteur").getValue(Long.class)));
+        Double latitude = producteur.child("latitude").getValue(Double.class), longitude = producteur.child("longitude").getValue(Double.class);
+        if (latitude != null && longitude != null) {
+            double a = (1 - Math.cos(Math.toRadians(latitude - mLocation.latitude))
+                    + Math.cos(Math.toRadians(mLocation.latitude)) * Math.cos(Math.toRadians(latitude))
+                    * (1 - Math.cos(Math.toRadians(longitude - mLocation.longitude)))) / 2;
+            return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+        else {
+            return 9999;
+        }
+    }
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
         if (inflater == null) {
@@ -55,7 +71,7 @@ public class ListAdapter extends BaseAdapter {
         }
 
         DataSnapshot product = mFilteredData.get(position);
-        ((TextView) convertView.findViewById(R.id.product_name)).setText(product.child("nom_produit").getValue(String.class));
+        ((TextView) convertView.findViewById(R.id.product_name)).setText(String.format(Locale.getDefault(), "%s\n%.1f km", product.child("nom_produit").getValue(String.class), getDistance(product)));
         Glide.with(convertView)
                 .load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Produits%2F" + product.child("id_produit").getValue(Long.class) + "?alt=media")
                 .into((ImageView) convertView.findViewById(R.id.product_image));
@@ -70,13 +86,14 @@ public class ListAdapter extends BaseAdapter {
     public void filter(String constraint) {
         mFilteredData = new ArrayList<>();
         if (constraint != null && constraint.length() > 0) {
-            for (DataSnapshot product : mData.getChildren()) {
+            for (DataSnapshot product : mData.child("Produit").getChildren()) {
                 String nom = product.child("nom_produit").getValue(String.class);
                 if (nom != null && nom.toUpperCase().contains(constraint.toUpperCase())) {
                     mFilteredData.add(product);
                 }
             }
         }
+        mFilteredData.sort((product1, product2) -> Double.compare(getDistance(product1), getDistance(product2)));
         notifyDataSetChanged();
     }
 }
