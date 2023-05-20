@@ -154,6 +154,7 @@ public class RegisterPage extends AppCompatActivity {
 
                                 // Store the user details in the database
                                 DatabaseReference userRef = myRef.child("Utilisateur").child(String.valueOf(currentid));
+                                userRef.child("id_utilisateur").setValue(currentid);
                                 userRef.child("prenom").setValue(userFname);
                                 userRef.child("nom").setValue(userLname);
                                 userRef.child("email").setValue(userEmail);
