@@ -100,6 +100,7 @@
             android:layout_marginEnd="16dp"
             android:src="@drawable/logo" />
 
+
         <TextView
             android:id="@+id/item_name"
             style="@style/TextAppearance.AppCompat.Title"
@@ -155,6 +156,8 @@
             android:layout_marginEnd="400dp"
             android:layout_marginBottom="200dp"
             android:text="Petites courgettes, vertes et mûres..." />
+
+
 
     </RelativeLayout>
 

@@ -5,6 +5,8 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,8 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ObjectInputStream;
+import java.sql.SQLOutput;
+import java.util.Calendar;
 
 
 public class ProducteurActivity extends AppCompatActivity {
@@ -33,14 +41,32 @@ public class ProducteurActivity extends AppCompatActivity {
     private TextView mGreetingTextView;
 
     private TextView item;
+    private TextView itemdes;
+    private ImageView imageViewproduct;
     private EditText mNameEditText;
     private Button mPlayButton;
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
+    private Integer idprod;
+    private StorageReference storageRef;
 
 
+    private void getPhotoForproduct(int productId, int nb){
 
+        //int productIdInt = Integer.parseInt(productId);
+        int productIdInt = productId;
+        StorageReference photoRef = storageRef.child("Produits/"+productIdInt);
+        System.out.println("nb = "+nb);
+        imageViewproduct = findViewById(R.id.item + nb);
+        photoRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                imageViewproduct.setImageBitmap(bitmap);
+            }
+        });
+    }
 
     private void getDescriptionById(String idProducteur) {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -71,34 +97,45 @@ public class ProducteurActivity extends AppCompatActivity {
         });
     }
 
+    private Integer cpt=0;
 
 
     private void getProductNameByProductId(String idProducteur) {
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-        Query produitsQuery = databaseRef.child("Produits").orderByChild("id_producteur").equalTo(Integer.parseInt(idProducteur));
 
-        ((Query)produitsQuery).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    //DataSnapshot premierProduit = dataSnapshot.getChildren().iterator().next();
-                    //String nomProduit = premierProduit.child("nom_produit").getValue(String.class);
-                    String nomProduit = dataSnapshot.child(idProducteur).child("nom_produit").getValue(String.class);
-                    if (nomProduit != null) {
-                        item.setText(nomProduit);
-                    } else {
-                        item.setText("Nom de produit non trouvé.");
+        myRef.child("Produit").get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        cpt = 0;
+                        for (DataSnapshot child : task.getResult().getChildren()) {
+                            if (cpt < 2) {
+                                if (cpt != 0){
+                                    item = findViewById(R.id.item_name + cpt);
+                                    itemdes = findViewById(R.id.item_des + cpt);}
+                                else{
+                                    item = findViewById(R.id.item_name);
+                                    itemdes = findViewById(R.id.item_des);
+                                }
+                                idprod = child.child("id_producteur").getValue(Integer.class);
+                                if (idprod == Integer.parseInt(idProducteur)) {
+                                    Integer idproduit = child.child("id_produit").getValue(Integer.class);
+                                    System.out.println(cpt);
+                                    getPhotoForproduct(idproduit, cpt);
+                                    item.setText(child.child("nom_produit").getValue(String.class));
+                                    itemdes.setText("Prix : " + child.child("prix").getValue(String.class) + "\n" + "Quantité disponible :  : " + child.child("quantite").getValue(String.class));
+                                    System.out.println(child.child("nom_produit").getValue(String.class));
+                                    cpt += 1;
+                                }
+                            }
+                        }
+                        for (int i = cpt; i < 2; i++) {
+                            if (i==0)
+                                item = findViewById(R.id.item_name);
+                            else
+                                item = findViewById(R.id.item_name + i);
+                            item.setText("No product");
+
+                        }
                     }
-                } else {
-                    item.setText("Aucun produit trouvé pour ce producteur.");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Erreur lors de la récupération du nom de produit : " + databaseError.getMessage());
-            }
-        });
+                });
     }
 
 
@@ -108,10 +145,12 @@ public class ProducteurActivity extends AppCompatActivity {
         setContentView(R.layout.activity_producteur);
 
 
-        item = findViewById(R.id.item_des);
+        item = findViewById(R.id.item_name);
         userphoto = findViewById(R.id.userImage);
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://miam-proche-9fb82.appspot.com");
 
         String idProducteur = "112";
         getDescriptionById(idProducteur);

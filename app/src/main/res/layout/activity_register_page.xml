@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,6 +8,16 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     tools:context=".LoginPage">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -15,7 +27,10 @@
         android:textColor="@color/black"
         android:textSize="35dp"
         android:textStyle="bold"
-        android:layout_margin="50dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
         />
 
@@ -25,7 +40,7 @@
         android:layout_height="65dp"
         android:layout_below="@id/signin"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="#30ffffff"
@@ -94,16 +109,155 @@
         android:textStyle="bold"
         />
 
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password"
+        android:text="S'inscrire en temps que producteur" />
+
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="380dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/checkbox"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#30ffffff"
+        android:drawablePadding="20dp"
+        android:hint="A propos de vous"
+        android:drawableLeft="@drawable/baseline_person_24"
+        android:padding="20dp"
+        android:textColor="@color/black"
+        android:textColorHint="#CCCCCC"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/telephone"
+        android:layout_width="380dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/description"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#30ffffff"
+        android:drawablePadding="20dp"
+        android:hint="Telephone"
+        android:drawableLeft="@drawable/baseline_person_24"
+        android:padding="20dp"
+        android:textColor="@color/black"
+        android:textColorHint="#CCCCCC"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/adresse"
+        android:layout_width="380dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/telephone"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#30ffffff"
+        android:drawablePadding="20dp"
+        android:hint="Adresse"
+        android:drawableLeft="@drawable/baseline_person_24"
+        android:padding="20dp"
+        android:textColor="@color/black"
+        android:textColorHint="#CCCCCC"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
+
+        <EditText
+            android:id="@+id/code_postal"
+            android:layout_width="380dp"
+            android:layout_height="65dp"
+            android:layout_below="@+id/adresse"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="#30ffffff"
+            android:drawablePadding="20dp"
+            android:hint="Code postal"
+            android:drawableLeft="@drawable/baseline_person_24"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            />
+
+    <EditText
+        android:id="@+id/ville"
+        android:layout_width="380dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/code_postal"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#30ffffff"
+        android:drawablePadding="20dp"
+        android:hint="Ville"
+        android:drawableLeft="@drawable/baseline_person_24"
+        android:padding="20dp"
+        android:textColor="@color/black"
+        android:textColorHint="#CCCCCC"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/pays"
+        android:layout_width="380dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/ville"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#30ffffff"
+        android:drawablePadding="20dp"
+        android:hint="Pays"
+        android:drawableLeft="@drawable/baseline_person_24"
+        android:padding="20dp"
+        android:textColor="@color/black"
+        android:textColorHint="#CCCCCC"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
+
+
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/register_btn"
-        android:layout_below="@id/password"
+        android:layout_below="@+id/pays"
         android:text="Register"
         android:backgroundTint="@color/design_default_color_secondary"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+
         />
-
-
+    </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
