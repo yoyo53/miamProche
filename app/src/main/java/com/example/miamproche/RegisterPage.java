@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -19,12 +20,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +45,38 @@ public class RegisterPage extends AppCompatActivity {
     private int currentid_producteur = 0; // Variable to store the number of people in the database
 
 
+    private static final int SELECT_PICTURE = 1;
+
+    private String selectedImagePath;
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri selectedImageUri = data.getData();
+            uploadImageToFirebaseStorage(selectedImageUri);
+        }
+    }
+
+
+    private void uploadImageToFirebaseStorage(Uri imageUri) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("Utilisateurs");
+        String fileName =  currentid+"";
+        StorageReference imageRef = storageRef.child(fileName);
+        imageRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +85,24 @@ public class RegisterPage extends AppCompatActivity {
 
         myRef = FirebaseDatabase.getInstance("https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app")
                 .getReference();
+
+
+
+
+        ((Button) findViewById(R.id.btn))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(intent,
+                                "Select Picture"), SELECT_PICTURE);
+                    }
+
+                });
+
+
+
 
 
         myRef.child("Utilisateur").addValueEventListener(new ValueEventListener() {
@@ -74,6 +130,9 @@ public class RegisterPage extends AppCompatActivity {
                 // handle error
             }
         });
+
+
+
 
         TextView fname = findViewById(R.id.fname);
         TextView lname = findViewById(R.id.lname);
