@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -68,12 +69,29 @@ public class ProductPage extends AppCompatActivity {
                             if(snapshot.exists()) {
 
                                 String prod_descr = snapshot.getChildren().iterator().next().child("description").getValue(String.class);
+                                double latitude = snapshot.getChildren().iterator().next().child("latitude").getValue(double.class);
+                                double longitude = snapshot.getChildren().iterator().next().child("longitude").getValue(double.class);
                                 Long id_utilisateur = snapshot.getChildren().iterator().next().child("id_utilisateur").getValue(Long.class);
+
+                                String destination = String.valueOf(latitude)+','+String.valueOf(longitude);
+
                                 ((TextView) findViewById(R.id.textView_producer_description)).setText(prod_descr);
 
                                 Glide.with(ProductPage.this)
                                         .load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Utilisateurs%2F" + id_utilisateur + "?alt=media")
                                         .into((ImageView) findViewById(R.id.imageView_pp));
+
+                                // Create a Uri from an intent string. Use the result to create an Intent.
+                                Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+destination);
+
+                                findViewById(R.id.button_go).setOnClickListener(v -> {
+                                    // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                    // Make the Intent explicit by setting the Google Maps package
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    // Attempt to start an activity that can handle the Intent
+                                    startActivity(mapIntent);
+                                });
 
                             }
                         }
