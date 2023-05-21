@@ -37,6 +37,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -113,7 +114,7 @@ public class ProductPage extends AppCompatActivity {
                                 if(snapshot.getChildrenCount() == 2){
 
                                     for(DataSnapshot ds : snapshot.getChildren()){
-                                        if(ds.child("id_produit").getValue(Long.class) != Long.valueOf(id_product)){
+                                        if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             final Long id1 = ds.child("id_produit").getValue(Long.class);
                                             ((TextView) findViewById(R.id.view_suggestion1_TV)).setText(ds.child("nom_produit").getValue(String.class));
                                             Glide.with(ProductPage.this)
@@ -137,7 +138,7 @@ public class ProductPage extends AppCompatActivity {
                                     Long id1 = null;
                                     Long id2 = null;
                                     for(DataSnapshot ds : snapshot.getChildren()){
-                                        if(ds.child("id_produit").getValue(Long.class) != Long.valueOf(id_product)){
+                                        if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             if(id1 == null){
                                                 id1 = ds.child("id_produit").getValue(Long.class);
                                                 ((TextView) findViewById(R.id.view_suggestion1_TV)).setText(ds.child("nom_produit").getValue(String.class));
@@ -174,7 +175,7 @@ public class ProductPage extends AppCompatActivity {
                                     Long id2 = null;
                                     Long id3 = null;
                                     for(DataSnapshot ds : snapshot.getChildren()){
-                                        if(ds.child("id_produit").getValue(Long.class) != Long.valueOf(id_product)){
+                                        if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             if(id1 == null){
                                                 id1 = ds.child("id_produit").getValue(Long.class);
                                                 ((TextView) findViewById(R.id.view_suggestion1_TV)).setText(ds.child("nom_produit").getValue(String.class));
@@ -242,17 +243,5 @@ public class ProductPage extends AppCompatActivity {
 
     }
 
-    void beReponsive(){
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-
-        ImageView product_image = findViewById(R.id.product_img);
-        product_image.requestLayout();
-        product_image.getLayoutParams().height = (int) (0.6*dpHeight);
-        product_image.getLayoutParams().width = (int) (0.5*dpWidth);
-
-    }
 
 }
