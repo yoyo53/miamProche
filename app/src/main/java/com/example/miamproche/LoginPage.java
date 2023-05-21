@@ -65,7 +65,7 @@ public class LoginPage extends AppCompatActivity {
                             if (hexString.toString().equals(mdp)){
                                 Integer idUtilisateur = child.child("id_utilisateur").getValue(Integer.class);
                                 if (idUtilisateur != null) {
-                                    Toast.makeText(LoginPage.this, "LOGIN SUCESSFULL", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginPage.this, "CONNEXION RÉUSSIE", Toast.LENGTH_SHORT).show();
                                     // Query la table "Producteur" en fonction de l'id_utilisateur
                                     DatabaseReference producteurRef = myRef.child("Producteur");
                                     Query producteurQuery = producteurRef.orderByChild("id_utilisateur").equalTo(idUtilisateur);
@@ -115,7 +115,7 @@ public class LoginPage extends AppCompatActivity {
                     }
                 }
                 if (!isLoginSuccessful){
-                    Toast.makeText(LoginPage.this, "LOGIN FAILED", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginPage.this, "CONNEXION ÉCHOUÉE", Toast.LENGTH_SHORT).show();
                 }
             }
         }));

@@ -203,7 +203,7 @@ public class RegisterPage extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            Toast.makeText(RegisterPage.this, "Email already exists", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterPage.this, "Email déjà existant", Toast.LENGTH_SHORT).show();
                         }
                         else{
                             try {
@@ -309,10 +309,10 @@ public class RegisterPage extends AppCompatActivity {
 
                                 }
 
-                                Toast.makeText(RegisterPage.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterPage.this, "Inscription Réussie", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(RegisterPage.this, LoginPage.class));
                             } catch (NoSuchAlgorithmException e) {
-                                throw new RuntimeException("MD5 is not available", e);
+                                throw new RuntimeException("MD5 n'est pas disponible", e);
                             }
                         }
                     }
