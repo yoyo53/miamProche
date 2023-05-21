@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -32,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -39,7 +42,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class RegisterPage extends AppCompatActivity {
-
     private DatabaseReference myRef;
     private int currentid = 0; // Variable to store the number of people in the database
     private int currentid_producteur = 0; // Variable to store the number of people in the database
@@ -48,6 +50,7 @@ public class RegisterPage extends AppCompatActivity {
     private static final int SELECT_PICTURE = 1;
 
     private String selectedImagePath;
+
 
 
     @Override
@@ -78,6 +81,18 @@ public class RegisterPage extends AppCompatActivity {
                 });
     }
 
+
+
+    private void requestStoragePermission() {
+        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+
+    }
+
+    private boolean checkStoragePermission() {
+        boolean res2 = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED;
+        return res2;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,14 +103,16 @@ public class RegisterPage extends AppCompatActivity {
 
 
 
-
         findViewById(R.id.btn).setOnClickListener(arg0 -> {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
-                });
-
+            if (!checkStoragePermission()) {
+                requestStoragePermission();
+            } else {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Choisir une image"), SELECT_PICTURE);
+            }
+        });
 
 
 
