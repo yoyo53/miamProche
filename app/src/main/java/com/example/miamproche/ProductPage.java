@@ -6,19 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Layout;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,15 +22,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ProductPage extends AppCompatActivity {
     String id_product;
@@ -50,12 +33,12 @@ public class ProductPage extends AppCompatActivity {
         id_product = getIntent().getStringExtra("productID");
         if(id_product == null)
             id_product = "1";
-        fetch_data();
+        fetchData();
 
         setContentView(R.layout.activity_product_page);
     }
 
-    void fetch_data(){
+    void fetchData(){
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         Query produitsQuery = databaseRef.child("Produit").orderByChild("id_produit").equalTo(Integer.parseInt(id_product));
 
