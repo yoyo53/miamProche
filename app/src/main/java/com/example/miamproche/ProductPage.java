@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
@@ -49,6 +50,7 @@ public class ProductPage extends AppCompatActivity {
         if(id_product == null)
             id_product = "1";
         fetch_data();
+
         setContentView(R.layout.activity_product_page);
     }
 
@@ -237,6 +239,19 @@ public class ProductPage extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    void beReponsive(){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+
+        ImageView product_image = findViewById(R.id.product_img);
+        product_image.requestLayout();
+        product_image.getLayoutParams().height = (int) (0.6*dpHeight);
+        product_image.getLayoutParams().width = (int) (0.5*dpWidth);
 
     }
 

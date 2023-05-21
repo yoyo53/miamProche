@@ -8,8 +8,10 @@
 
     <Button
         android:id="@+id/button_go"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.2"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.1"
         android:background="#8FB43A"
         android:text="@string/go"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,12 +19,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
+        app:layout_constraintVertical_bias="0.98" />
 
     <ImageView
         android:id="@+id/product_img"
-        android:layout_width="210dp"
-        android:layout_height="320dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.5"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.5"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
 
@@ -37,19 +41,28 @@
 
     <TextView
         android:id="@+id/textView_price"
-        android:layout_width="210dp"
-        android:layout_height="45dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.5"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.1"
+        android:textSize="15sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.123" />
+        app:layout_constraintVertical_bias="0.115" />
+
+
 
     <TextView
         android:id="@+id/textView_description"
-        android:layout_width="207dp"
-        android:layout_height="165dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.5"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.24"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.058"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -59,10 +72,13 @@
 
     <ImageView
         android:id="@+id/imageView_pp"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.43"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.25"
+
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.94"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -71,12 +87,14 @@
 
     <TextView
         android:id="@+id/textView_producer_description"
-        android:layout_width="140dp"
-        android:layout_height="150dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.43"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.26"
         android:text=""
-
-        app:layout_constraintHorizontal_bias="0.94"
-        app:layout_constraintVertical_bias="0.35"
+        android:textSize="11sp"
+        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintVertical_bias="0.375"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -85,11 +103,13 @@
 
     <RelativeLayout
         android:id="@+id/view_suggestion1"
-        android:layout_width="180dp"
-        android:layout_height="60dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.43"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.112"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.9725"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -99,11 +119,12 @@
         <ImageView
             android:id="@+id/view_suggestion1_IV"
             android:layout_width="60dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            />
 
         <TextView
             android:id="@+id/view_suggestion1_TV"
-            android:layout_width="60dp"
+            android:layout_width="60sp"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
@@ -119,15 +140,17 @@
 
     <RelativeLayout
         android:id="@+id/view_suggestion2"
-        android:layout_width="180dp"
-        android:layout_height="60dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.43"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.112"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.9725"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.72"
+        app:layout_constraintVertical_bias="0.73"
         >
 
         <ImageView
@@ -137,7 +160,7 @@
 
         <TextView
             android:id="@+id/view_suggestion2_TV"
-            android:layout_width="60dp"
+            android:layout_width="60sp"
             android:layout_height="match_parent"
             android:text=""
             android:gravity="center"
@@ -153,15 +176,17 @@
 
     <RelativeLayout
         android:id="@+id/view_suggestion3"
-        android:layout_width="180dp"
-        android:layout_height="60dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.43"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.112"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.9725"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.84"
+        app:layout_constraintVertical_bias="0.86"
         >
 
         <ImageView
@@ -171,7 +196,7 @@
 
         <TextView
             android:id="@+id/view_suggestion3_TV"
-            android:layout_width="60dp"
+            android:layout_width="60sp"
             android:layout_height="match_parent"
             android:text=""
             android:gravity="center"
@@ -187,9 +212,11 @@
 
     <TextView
         android:id="@+id/product_name"
-        android:layout_width="210dp"
-        android:layout_height="40dp"
+        android:layout_width="210sp"
+        android:layout_height="40sp"
         android:text="productname"
+        android:textSize="18sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintLeft_toLeftOf="parent"
