@@ -46,6 +46,8 @@ public class RegisterPage extends AppCompatActivity {
     private int currentid = 0; // Variable to store the number of people in the database
     private int currentid_producteur = 0; // Variable to store the number of people in the database
 
+    private Uri image;
+
 
     private static final int SELECT_PICTURE = 1;
 
@@ -59,7 +61,8 @@ public class RegisterPage extends AppCompatActivity {
 
         if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri selectedImageUri = data.getData();
-            uploadImageToFirebaseStorage(selectedImageUri);
+            image = selectedImageUri;
+            //uploadImageToFirebaseStorage(selectedImageUri);
         }
     }
 
@@ -114,14 +117,12 @@ public class RegisterPage extends AppCompatActivity {
             }
         });
 
-
-
-
         myRef.child("Utilisateur").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 currentid = (int) snapshot.getChildrenCount();
             }
+
 
 
             @Override
@@ -218,7 +219,17 @@ public class RegisterPage extends AppCompatActivity {
                                     hexString.append(hex);
                                 }
 
+                                myRef.child("Utilisateur").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        currentid = (int) snapshot.getChildrenCount();
+                                    }
 
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
 
                                 // Store the user details in the database
                                 DatabaseReference userRef = myRef.child("Utilisateur").child(String.valueOf(currentid));
@@ -228,7 +239,36 @@ public class RegisterPage extends AppCompatActivity {
                                 userRef.child("email").setValue(userEmail);
                                 userRef.child("mdp").setValue(hexString.toString());
 
+                                StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("Utilisateurs");
+                                String fileName =  currentid+"";
+                                StorageReference imageRef = storageRef.child(fileName);
+                                imageRef.putFile(image)
+                                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                            }
+                                        });
+
                                 if (checkBox.isChecked()) {
+
+                                    myRef.child("Producteur").addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            currentid_producteur = (int) snapshot.getChildrenCount();
+                                        }
+
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            // handle error
+                                        }
+                                    });
+
                                     DatabaseReference producteurRef = myRef.child("Producteur").child(String.valueOf(currentid_producteur));
 
                                     String description = editText_description.getText().toString();

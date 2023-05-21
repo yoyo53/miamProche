@@ -99,6 +99,7 @@ public class ProductPage extends AppCompatActivity {
                                     for(DataSnapshot ds : snapshot.getChildren()){
                                         if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             final Long id1 = ds.child("id_produit").getValue(Long.class);
+                                            System.out.println("yoooooooooooooo"+id1);
                                             ((TextView) findViewById(R.id.view_suggestion1_TV)).setText(ds.child("nom_produit").getValue(String.class));
                                             Glide.with(ProductPage.this)
                                                     .load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Produits%2F" + id1 + "?alt=media")
@@ -145,6 +146,7 @@ public class ProductPage extends AppCompatActivity {
                                                 findViewById(R.id.view_suggestion2_B).setOnClickListener(v -> {
                                                     Intent intent = new Intent(ProductPage.this, ProductPage.class);
                                                     intent.putExtra("productID", String.valueOf(finalId2));
+
                                                     startActivity(intent);
                                                 });
                                                 break;
@@ -161,6 +163,7 @@ public class ProductPage extends AppCompatActivity {
                                         if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             if(id1 == null){
                                                 id1 = ds.child("id_produit").getValue(Long.class);
+
                                                 ((TextView) findViewById(R.id.view_suggestion1_TV)).setText(ds.child("nom_produit").getValue(String.class));
                                                 Glide.with(ProductPage.this)
                                                         .load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Produits%2F" + id1 + "?alt=media")

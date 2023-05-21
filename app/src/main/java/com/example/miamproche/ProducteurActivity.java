@@ -83,6 +83,7 @@ public class ProducteurActivity extends AppCompatActivity {
         //String idProducteur = "112";
         getDescriptionById(idProducteur);
         getProductNameByProductId(idProducteur);
+        System.out.println("yooooooooooooooooo"+idProducteur);
         getPhotoForUser(idProducteur);
         getProductNameByProductId(idProducteur);
 
