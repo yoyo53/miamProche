@@ -79,11 +79,13 @@ public class ProducteurActivity extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
         SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        String idProducteur = prefs.getString("id", "1");
+        String idProducteur = prefs.getString("id_producteur", "1");
+        String idUtilisateur = prefs.getString("id_utilisateur", "0");
         //String idProducteur = "112";
         getDescriptionById(idProducteur);
         getProductNameByProductId(idProducteur);
         System.out.println("yooooooooooooooooo"+idProducteur);
+        System.out.println("yooooooooooooooooo"+idUtilisateur);
         getPhotoForUser(idProducteur);
         getProductNameByProductId(idProducteur);
 

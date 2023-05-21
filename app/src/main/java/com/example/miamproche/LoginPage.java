@@ -66,7 +66,7 @@ public class LoginPage extends AppCompatActivity {
                                 Integer idUtilisateur = child.child("id_utilisateur").getValue(Integer.class);
                                 if (idUtilisateur != null) {
                                     Toast.makeText(LoginPage.this, "LOGIN SUCESSFULL", Toast.LENGTH_SHORT).show();
-                                    // Query la table "Producteur" en fonction de l'id_producteur
+                                    // Query la table "Producteur" en fonction de l'id_utilisateur
                                     DatabaseReference producteurRef = myRef.child("Producteur");
                                     Query producteurQuery = producteurRef.orderByChild("id_utilisateur").equalTo(idUtilisateur);
 
@@ -77,7 +77,8 @@ public class LoginPage extends AppCompatActivity {
                                                 for (DataSnapshot producteurSnapshot : dataSnapshot.getChildren()) {
                                                     Integer idProducteur = producteurSnapshot.child("id_producteur").getValue(Integer.class);
                                                     SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
-                                                    editor.putString("id", String.valueOf(idProducteur));
+                                                    editor.putString("id_producteur", String.valueOf(idProducteur));
+                                                    editor.putString("id_utilisateur", String.valueOf(idUtilisateur));
                                                     editor.apply();
                                                     if (idProducteur != null) {
                                                         startActivity(new Intent(LoginPage.this, MapActivity.class));
