@@ -50,6 +50,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -125,35 +126,41 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         dbRef.get().addOnSuccessListener(result -> {
+            HashMap<Long, DataSnapshot> producteurs = new HashMap<>();
+            for (DataSnapshot producteur : result.child("Producteur").getChildren()) {
+                producteurs.put(producteur.child("id_producteur").getValue(Long.class), producteur);
+            }
             for(DataSnapshot produit : result.child("Produit").getChildren()){
-                DataSnapshot producteur = result.child("Producteur").child(String.valueOf(produit.child("id_producteur").getValue(Long.class)));
-                Double latitude = producteur.child("latitude").getValue(Double.class);
-                Double longitude = producteur.child("longitude").getValue(Double.class);
-                String productID = String.valueOf(produit.child("id_produit").getValue(Long.class));
-                if (latitude != null && longitude != null) {
-                    LatLng location = new LatLng(latitude, longitude);
-                    int i = 1;
-                    while (mLocations.contains(location)) {
-                        location = new LatLng(latitude + i * 0.0002, longitude + i * 0.0002);
-                        if (!mLocations.contains(location)) {break;}
-                        location = new LatLng(latitude + i * 0.0002, longitude);
-                        if (!mLocations.contains(location)) {break;}
-                        location = new LatLng(latitude + i * 0.0002, longitude - i * 0.0002);
-                        if (!mLocations.contains(location)) {break;}
-                        location = new LatLng(latitude, longitude - i * 0.0002);
-                        if (!mLocations.contains(location)) {break;}
-                        location = new LatLng(latitude, longitude + i * 0.0002);
-                        if (!mLocations.contains(location)) {break;}
-                        location = new LatLng(latitude - i * 0.0002, longitude - i * 0.0002);
-                        if (!mLocations.contains(location)) {break;}
-                        location = new LatLng(latitude - i * 0.0002, longitude);
-                        if (!mLocations.contains(location)) {break;}
-                        location = new LatLng(latitude - i * 0.0002, longitude + i * 0.0002);
-                        i++;
+                DataSnapshot producteur = producteurs.get(produit.child("id_producteur").getValue(Long.class));
+                if (producteur != null) {
+                    Double latitude = producteur.child("latitude").getValue(Double.class);
+                    Double longitude = producteur.child("longitude").getValue(Double.class);
+                    String productID = String.valueOf(produit.child("id_produit").getValue(Long.class));
+                    if (latitude != null && longitude != null) {
+                        LatLng location = new LatLng(latitude, longitude);
+                        int i = 1;
+                        while (mLocations.contains(location)) {
+                            location = new LatLng(latitude + i * 0.0002, longitude + i * 0.0002);
+                            if (!mLocations.contains(location)) {break;}
+                            location = new LatLng(latitude + i * 0.0002, longitude);
+                            if (!mLocations.contains(location)) {break;}
+                            location = new LatLng(latitude + i * 0.0002, longitude - i * 0.0002);
+                            if (!mLocations.contains(location)) {break;}
+                            location = new LatLng(latitude, longitude - i * 0.0002);
+                            if (!mLocations.contains(location)) {break;}
+                            location = new LatLng(latitude, longitude + i * 0.0002);
+                            if (!mLocations.contains(location)) {break;}
+                            location = new LatLng(latitude - i * 0.0002, longitude - i * 0.0002);
+                            if (!mLocations.contains(location)) {break;}
+                            location = new LatLng(latitude - i * 0.0002, longitude);
+                            if (!mLocations.contains(location)) {break;}
+                            location = new LatLng(latitude - i * 0.0002, longitude + i * 0.0002);
+                            i++;
+                        }
+                        MarkerOptions options = new MarkerOptions().position(location);
+                        mLocations.add(location);
+                        addMarker(options, productID);
                     }
-                    MarkerOptions options = new MarkerOptions().position(location);
-                    mLocations.add(location);
-                    addMarker(options, productID);
                 }
             }
         });

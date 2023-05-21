@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,11 +27,15 @@ public class ListAdapter extends BaseAdapter {
     LatLng mLocation = new LatLng(48.7887217, 2.361176);
     private LayoutInflater inflater;
     private final String bucket = FirebaseStorage.getInstance().getReference().getBucket();
+    private final HashMap<Long, DataSnapshot> producteurs = new HashMap<>();
 
     public ListAdapter(DataSnapshot data, Activity activity) {
         mData = data;
         mFilteredData = new ArrayList<>();
         mActivity = activity;
+        for (DataSnapshot producteur : mData.child("Producteur").getChildren()) {
+            producteurs.put(producteur.child("id_producteur").getValue(Long.class), producteur);
+        }
     }
 
     @Override
@@ -49,18 +54,19 @@ public class ListAdapter extends BaseAdapter {
     }
 
     public double getDistance(DataSnapshot product) {
-        DataSnapshot producteur = mData.child("Producteur").child(String.valueOf(product.child("id_producteur").getValue(Long.class)));
-        Double latitude = producteur.child("latitude").getValue(Double.class), longitude = producteur.child("longitude").getValue(Double.class);
-        if (latitude != null && longitude != null) {
-            double a = (1 - Math.cos(Math.toRadians(latitude - mLocation.latitude))
-                    + Math.cos(Math.toRadians(mLocation.latitude)) * Math.cos(Math.toRadians(latitude))
-                    * (1 - Math.cos(Math.toRadians(longitude - mLocation.longitude)))) / 2;
-            return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        DataSnapshot producteur = producteurs.get(product.child("id_producteur").getValue(Long.class));
+        if (producteur != null) {
+            Double latitude = producteur.child("latitude").getValue(Double.class), longitude = producteur.child("longitude").getValue(Double.class);
+            if (latitude != null && longitude != null) {
+                double a = (1 - Math.cos(Math.toRadians(latitude - mLocation.latitude))
+                        + Math.cos(Math.toRadians(mLocation.latitude)) * Math.cos(Math.toRadians(latitude))
+                        * (1 - Math.cos(Math.toRadians(longitude - mLocation.longitude)))) / 2;
+                return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            }
         }
-        else {
-            return 9999;
-        }
+        return 9999;
     }
+
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
         if (inflater == null) {

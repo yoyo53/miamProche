@@ -63,8 +63,6 @@ public class ProducteurActivity extends AppCompatActivity {
     private ImageView addimage;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +76,14 @@ public class ProducteurActivity extends AppCompatActivity {
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
+
         SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        String idProducteur = prefs.getString("id", "1");
+        String idProducteur = prefs.getString("id_producteur", "1");
+        String idUtilisateur = prefs.getString("id_utilisateur", "0");
         //String idProducteur = "112";
         getDescriptionById(idProducteur);
         getProductNameByProductId(idProducteur);
-        getPhotoForUser(idProducteur);
+        getPhotoForUser(idUtilisateur);
         getProductNameByProductId(idProducteur);
 
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -111,12 +111,9 @@ public class ProducteurActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     // Afficher l'image à partir de l'URI
                     ImageView imageView = findViewById(R.id.newimage);
                     imageView.setImageBitmap(bitmap);
-
-                    // Afficher l'URI dans les logs
                     Log.d("Image URI", imageUri.toString());
                 }
             }
@@ -131,7 +128,6 @@ public class ProducteurActivity extends AppCompatActivity {
             String[] options = {"Prendre une Photo", "Choisir depuis la Galerie"};
             builder.setItems(options, (dialog, which) -> {
                 if (which == 0) {
-                    // Option "Take Photo" selected
                     if (!checkCameraPermission()) {
                         requestCameraPermission();
                     } else {
@@ -139,7 +135,6 @@ public class ProducteurActivity extends AppCompatActivity {
                         imagePickerLauncher.launch(intent);
                     }
                 } else if (which == 1) {
-                    // Option "Choose from Gallery" selected
                     if (!checkStoragePermission()) {
                         requestStoragePermission();
                     } else {
@@ -166,9 +161,8 @@ public class ProducteurActivity extends AppCompatActivity {
                 addProduct(descriptionProduit, idProducteur, nomProduit, quantiteProduit, prixProduit, imageUri);
             }
         });
-
-
     }
+
 
     private void getDescriptionById(String idProducteur) {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -230,19 +224,19 @@ public class ProducteurActivity extends AppCompatActivity {
             public void onSuccess(byte[] bytes) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 imageViewproduct.setImageBitmap(bitmap);
+
+                imageViewproduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ProducteurActivity.this, ProductPage.class);
+                        intent.putExtra("productID", String.valueOf(productIdInt)); // Utilisez la variable productIdInt ici
+                        startActivity(intent);
+                    }
+                });
             }
         });
-        imageViewproduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProducteurActivity.this, ProductPage.class);
-                intent.putExtra("productID", productId);
-                startActivity(intent);
-            }
-        });
-
-
     }
+
 
 
     private void getProductNameByProductId(String idProducteur) {
@@ -282,15 +276,10 @@ public class ProducteurActivity extends AppCompatActivity {
     private void uploadImageToFirebaseStorage(int productIdInt, Uri imageUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://miam-proche-9fb82.appspot.com");
-
         StorageReference imageRef = storageRef.child("Produits/" + productIdInt);
-
         UploadTask uploadTask = imageRef.putFile(imageUri);
-
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-            System.out.println("okk");
         }).addOnFailureListener(e -> {
-            // Gérer les erreurs de téléchargement de l'image
             Toast.makeText(ProducteurActivity.this, "Erreur lors du téléchargement de l'image", Toast.LENGTH_SHORT).show();
         });
     }
@@ -320,7 +309,6 @@ public class ProducteurActivity extends AppCompatActivity {
 
                 uploadImageToFirebaseStorage(newProductId, imageUri);
                 Produit produit = new Produit(description, newProductRef, newProductId, id_Producteur, nom_produit, quantite, prix, image);
-                System.out.println("LOOOOOOK HERE" + produit.toString());
                 // Ajouter le produit à la base de données
                 databaseRef.child(String.valueOf(newProductRef)).setValue(produit)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -334,14 +322,12 @@ public class ProducteurActivity extends AppCompatActivity {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                // Une erreur s'est produite lors de l'ajout du produit
                                 Toast.makeText(ProducteurActivity.this, "Erreur lors de l'ajout du produit", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Une erreur s'est produite lors de la récupération des données
             }
         });
     }
