@@ -167,6 +167,7 @@ public class ProducteurActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     private void getDescriptionById(String idProducteur) {
@@ -231,6 +232,16 @@ public class ProducteurActivity extends AppCompatActivity {
                 imageViewproduct.setImageBitmap(bitmap);
             }
         });
+        imageViewproduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProducteurActivity.this, ProductPage.class);
+                intent.putExtra("productID", productId);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
 

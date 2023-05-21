@@ -66,7 +66,7 @@ public class LoginPage extends AppCompatActivity {
                                 Integer idUtilisateur = child.child("id_utilisateur").getValue(Integer.class);
                                 if (idUtilisateur != null) {
                                     Toast.makeText(LoginPage.this, "LOGIN SUCESSFULL", Toast.LENGTH_SHORT).show();
-                                    // Query the "Producteur" table based on the email
+                                    // Query la table "Producteur" en fonction de l'id_producteur
                                     DatabaseReference producteurRef = myRef.child("Producteur");
                                     Query producteurQuery = producteurRef.orderByChild("id_utilisateur").equalTo(idUtilisateur);
 

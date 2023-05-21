@@ -137,6 +137,7 @@
             android:textSize="10sp"
             android:gravity="center"
             android:textStyle="bold"
+            android:backgroundTint="@color/design_default_color_secondary_variant"
             android:text="Ajouter" />
 
 
