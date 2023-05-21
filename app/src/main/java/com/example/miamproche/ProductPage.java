@@ -66,7 +66,7 @@ public class ProductPage extends AppCompatActivity {
                     //String nomProduit = premierProduit.child("nom_produit").getValue(String.class);
                     String nomProduit = dataSnapshot.getChildren().iterator().next().child("nom_produit").getValue(String.class);
                     String description = dataSnapshot.getChildren().iterator().next().child("description").getValue(String.class);
-                    String price = dataSnapshot.getChildren().iterator().next().child("prix").getValue(String.class);
+                    String price = "Prix (€) : "+ dataSnapshot.getChildren().iterator().next().child("prix").getValue(String.class)+ "\nQuantité disponible : "+dataSnapshot.getChildren().iterator().next().child("quantite").getValue(String.class);
                     Integer id_prod = dataSnapshot.getChildren().iterator().next().child("id_producteur").getValue(Integer.class);
 
                     Glide.with(ProductPage.this)
