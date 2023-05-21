@@ -81,9 +81,7 @@ public class ProductPage extends AppCompatActivity {
                                         .load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Utilisateurs%2F" + id_utilisateur + "?alt=media")
                                         .into((ImageView) findViewById(R.id.imageView_pp));
 
-                                // Create a Uri from an intent string. Use the result to create an Intent.
-                                Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+destination);
-
+                                //initialisation of the GO button, it will open Maps to the destination which is the location of the producer
                                 findViewById(R.id.button_go).setOnClickListener(v -> {
                                     String googleMapsUrl = "google.navigation:q=" + latitude + "," + longitude;
                                     Uri uri = Uri.parse(googleMapsUrl);
