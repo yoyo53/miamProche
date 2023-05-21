@@ -11,41 +11,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <ImageView
-        android:id="@+id/userImage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+
+    <LinearLayout
+        android:id="@+id/linearlayout_producteur"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:layout_marginTop="30dp"
-        android:src="@drawable/logo"
-        android:scaleType="centerCrop"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        android:contentDescription="Photo du producteur" />
-    <ScrollView
-        android:id="@+id/scrollview_greeting"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        app:layout_constrainedWidth="true"
-        app:layout_constrainedHeight="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="15dp"
-        app:layout_constraintStart_toEndOf="@id/userImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/userImage"
-        app:layout_constraintBottom_toBottomOf="@id/userImage"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintHorizontal_bias="0" >
+        app:layout_constraintEnd_toEndOf="parent" >
+
+        <ImageView
+            android:id="@+id/userImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/logo"
+            android:scaleType="centerCrop"
+            android:contentDescription="Photo du producteur"
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/main_textview_greeting"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="20dp"
             android:justificationMode="inter_word"
             android:textSize="15sp" />
-    </ScrollView>
+    </LinearLayout>
+
 
     <EditText
         android:id="@+id/editText_nom_produit"
@@ -58,7 +53,7 @@
         android:hint="Nom du produit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userImage"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout_producteur"
         app:layout_constraintHorizontal_bias="0.05"
         android:importantForAutofill="no"
         android:inputType="text|textCapSentences"
@@ -74,7 +69,7 @@
         android:hint="Quantité"
         app:layout_constraintStart_toEndOf="@+id/editText_nom_produit"
         app:layout_constraintEnd_toStartOf="@+id/editText_prix"
-        app:layout_constraintTop_toBottomOf="@id/userImage"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout_producteur"
         android:importantForAutofill="no"
         android:inputType="text|textCapSentences"
         android:nextFocusDown="@+id/editText_prix" />
@@ -90,7 +85,7 @@
         android:hint="Prix"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userImage"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout_producteur"
         app:layout_constraintHorizontal_bias="0.95"
         android:importantForAutofill="no"
         android:inputType="text|textCapSentences"
