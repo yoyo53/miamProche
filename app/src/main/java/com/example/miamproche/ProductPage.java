@@ -85,12 +85,13 @@ public class ProductPage extends AppCompatActivity {
                                 Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+destination);
 
                                 findViewById(R.id.button_go).setOnClickListener(v -> {
-                                    // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
-                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                    // Make the Intent explicit by setting the Google Maps package
-                                    mapIntent.setPackage("com.google.android.apps.maps");
-                                    // Attempt to start an activity that can handle the Intent
-                                    startActivity(mapIntent);
+                                    String googleMapsUrl = "google.navigation:q=" + latitude + "," + longitude;
+                                    Uri uri = Uri.parse(googleMapsUrl);
+
+                                    String googleMapsPackage = "com.google.android.apps.maps";
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    intent.setPackage(googleMapsPackage);
+                                    startActivity(intent);
                                 });
 
                             }
