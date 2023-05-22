@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,19 +30,29 @@ public class ProductPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_product_page);
+
+        findViewById(R.id.map_button).setOnClickListener(v -> startActivity(new Intent(this, MapActivity.class)));
+        findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
+        findViewById(R.id.logout_button).setOnClickListener(v -> startActivity(new Intent(this, LoginPage.class)));
+        if (getSharedPreferences("MyPrefs", MODE_PRIVATE).getString("id_producteur", "-1").equals("-1")){
+            findViewById(R.id.settings_button).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));
+        }
+
         id_product = getIntent().getStringExtra("productID");
         if(id_product == null)
             id_product = "0";
         fetchData();
-
-        setContentView(R.layout.activity_product_page);
     }
 
     void fetchData(){
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         Query produitsQuery = databaseRef.child("Produit").orderByChild("id_produit").equalTo(Integer.parseInt(id_product));
 
-        ((Query)produitsQuery).addListenerForSingleValueEvent(new ValueEventListener() {
+        produitsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -63,7 +72,7 @@ public class ProductPage extends AppCompatActivity {
                     ((TextView) findViewById(R.id.textView_price)).setText(price);
 
                     Query producteurQuery = databaseRef.child("Producteur").orderByChild("id_producteur").equalTo(id_prod);
-                    ((Query)producteurQuery).addListenerForSingleValueEvent(new ValueEventListener() {
+                    producteurQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.exists()) {
@@ -72,8 +81,6 @@ public class ProductPage extends AppCompatActivity {
                                 double latitude = snapshot.getChildren().iterator().next().child("latitude").getValue(double.class);
                                 double longitude = snapshot.getChildren().iterator().next().child("longitude").getValue(double.class);
                                 Long id_utilisateur = snapshot.getChildren().iterator().next().child("id_utilisateur").getValue(Long.class);
-
-                                String destination = String.valueOf(latitude)+','+String.valueOf(longitude);
 
                                 ((TextView) findViewById(R.id.textView_producer_description)).setText(prod_descr);
 
@@ -102,17 +109,12 @@ public class ProductPage extends AppCompatActivity {
                     });
 
                     Query getOtherProduct = databaseRef.child("Produit").orderByChild("id_producteur").equalTo(id_prod);
-                    ((Query)getOtherProduct).addListenerForSingleValueEvent(new ValueEventListener() {
+                    getOtherProduct.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.exists()){
-                                if(snapshot.getChildrenCount() == 1){
-                                    ((RelativeLayout) findViewById(R.id.view_suggestion1)).setVisibility(View.GONE);
-                                    ((RelativeLayout) findViewById(R.id.view_suggestion2)).setVisibility(View.GONE);
-                                    ((RelativeLayout) findViewById(R.id.view_suggestion3)).setVisibility(View.GONE);
-                                }
                                 if(snapshot.getChildrenCount() == 2){
-
+                                    findViewById(R.id.view_suggestion1).setVisibility(View.VISIBLE);
                                     for(DataSnapshot ds : snapshot.getChildren()){
                                         if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             final Long id1 = ds.child("id_produit").getValue(Long.class);
@@ -131,13 +133,12 @@ public class ProductPage extends AppCompatActivity {
                                             break;
                                         }
                                     }
-
-                                    ((RelativeLayout) findViewById(R.id.view_suggestion2)).setVisibility(View.GONE);
-                                    ((RelativeLayout) findViewById(R.id.view_suggestion3)).setVisibility(View.GONE);
                                 }
                                 if(snapshot.getChildrenCount() == 3){
+                                    findViewById(R.id.view_suggestion1).setVisibility(View.VISIBLE);
+                                    findViewById(R.id.view_suggestion2).setVisibility(View.VISIBLE);
                                     Long id1 = null;
-                                    Long id2 = null;
+                                    Long id2;
                                     for(DataSnapshot ds : snapshot.getChildren()){
                                         if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             if(id1 == null){
@@ -170,12 +171,14 @@ public class ProductPage extends AppCompatActivity {
                                             }
                                         }
                                     }
-                                    ((RelativeLayout) findViewById(R.id.view_suggestion3)).setVisibility(View.GONE);
                                 }
                                 if(snapshot.getChildrenCount() > 3){
+                                    findViewById(R.id.view_suggestion1).setVisibility(View.VISIBLE);
+                                    findViewById(R.id.view_suggestion2).setVisibility(View.VISIBLE);
+                                    findViewById(R.id.view_suggestion3).setVisibility(View.VISIBLE);
                                     Long id1 = null;
                                     Long id2 = null;
-                                    Long id3 = null;
+                                    Long id3;
                                     for(DataSnapshot ds : snapshot.getChildren()){
                                         if(!Objects.equals(ds.child("id_produit").getValue(Long.class), Long.valueOf(id_product))){
                                             if(id1 == null){
@@ -223,7 +226,6 @@ public class ProductPage extends AppCompatActivity {
                                         }
                                     }
                                 }
-
                             }
                         }
 

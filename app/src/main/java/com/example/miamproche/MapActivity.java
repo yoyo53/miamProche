@@ -75,15 +75,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         dbRef = FirebaseDatabase.getInstance().getReference();
 
         findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
-
         findViewById(R.id.logout_button).setOnClickListener(v -> startActivity(new Intent(this, LoginPage.class)));
-
-        String idProducteur = getSharedPreferences("MyPrefs", MODE_PRIVATE).getString("id", "-1");
-        if (idProducteur.equals("-1")){
+        if (getSharedPreferences("MyPrefs", MODE_PRIVATE).getString("id_producteur", "-1").equals("-1")){
             findViewById(R.id.settings_button).setVisibility(View.GONE);
         }
         else{
-            findViewById(R.id.settings_button).setVisibility(View.VISIBLE);
             findViewById(R.id.settings_button).setOnClickListener(v -> startActivity(new Intent(this, ProducteurActivity.class)));
         }
 
@@ -137,28 +133,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Double longitude = producteur.child("longitude").getValue(Double.class);
                     String productID = String.valueOf(produit.child("id_produit").getValue(Long.class));
                     if (latitude != null && longitude != null) {
-                        LatLng location = new LatLng(latitude, longitude);
-                        int i = 1;
-                        while (mLocations.contains(location)) {
-                            location = new LatLng(latitude + i * 0.0002, longitude + i * 0.0002);
-                            if (!mLocations.contains(location)) {break;}
-                            location = new LatLng(latitude + i * 0.0002, longitude);
-                            if (!mLocations.contains(location)) {break;}
-                            location = new LatLng(latitude + i * 0.0002, longitude - i * 0.0002);
-                            if (!mLocations.contains(location)) {break;}
-                            location = new LatLng(latitude, longitude - i * 0.0002);
-                            if (!mLocations.contains(location)) {break;}
-                            location = new LatLng(latitude, longitude + i * 0.0002);
-                            if (!mLocations.contains(location)) {break;}
-                            location = new LatLng(latitude - i * 0.0002, longitude - i * 0.0002);
-                            if (!mLocations.contains(location)) {break;}
-                            location = new LatLng(latitude - i * 0.0002, longitude);
-                            if (!mLocations.contains(location)) {break;}
-                            location = new LatLng(latitude - i * 0.0002, longitude + i * 0.0002);
-                            i++;
-                        }
-                        MarkerOptions options = new MarkerOptions().position(location);
-                        mLocations.add(location);
+                        MarkerOptions options = new MarkerOptions().position(getFreeLocation(latitude, longitude));
                         addMarker(options, productID);
                     }
                 }
@@ -173,6 +148,31 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         else {
             SwitchGPS_ON();
         }
+    }
+
+    public LatLng getFreeLocation(Double latitude, Double longitude) {
+        LatLng location = new LatLng(latitude, longitude);
+        int i = 1;
+        while (mLocations.contains(location)) {
+            location = new LatLng(latitude + i * 0.0002, longitude + i * 0.0002);
+            if (!mLocations.contains(location)) {break;}
+            location = new LatLng(latitude + i * 0.0002, longitude);
+            if (!mLocations.contains(location)) {break;}
+            location = new LatLng(latitude + i * 0.0002, longitude - i * 0.0002);
+            if (!mLocations.contains(location)) {break;}
+            location = new LatLng(latitude, longitude - i * 0.0002);
+            if (!mLocations.contains(location)) {break;}
+            location = new LatLng(latitude, longitude + i * 0.0002);
+            if (!mLocations.contains(location)) {break;}
+            location = new LatLng(latitude - i * 0.0002, longitude - i * 0.0002);
+            if (!mLocations.contains(location)) {break;}
+            location = new LatLng(latitude - i * 0.0002, longitude);
+            if (!mLocations.contains(location)) {break;}
+            location = new LatLng(latitude - i * 0.0002, longitude + i * 0.0002);
+            i++;
+        }
+        mLocations.add(location);
+        return location;
     }
 
     public void SwitchGPS_ON(){
@@ -208,12 +208,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void addMarker(final MarkerOptions options, final String productID) {
-        Glide.with(this).asBitmap().load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Produits%2F" + productID + "?alt=media").into(new CustomTarget<Bitmap>() {
+        Glide.with(this).asBitmap()
+                .load("https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/Produits%2F" + productID + "?alt=media")
+                .into(new CustomTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 Bitmap marker_bmp = mMarkerBmp.copy(mMarkerBmp.getConfig(), true);
                 Bitmap image = resource;
-                int size = Math.min(image.getWidth(), image.getHeight()), x_offset = (image.getWidth() - size) / 2, y_offset = (image.getHeight() - size) / 2;
+                int size = Math.min(image.getWidth(), image.getHeight());
+                int x_offset = (image.getWidth() - size) / 2, y_offset = (image.getHeight() - size) / 2;
                 image = Bitmap.createBitmap(image, x_offset, y_offset, size + x_offset, size + y_offset);
                 image = Bitmap.createScaledBitmap(image, IMAGE_SIZE, IMAGE_SIZE, false);
 

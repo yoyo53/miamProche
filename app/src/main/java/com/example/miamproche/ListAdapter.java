@@ -56,7 +56,8 @@ public class ListAdapter extends BaseAdapter {
     public double getDistance(DataSnapshot product) {
         DataSnapshot producteur = producteurs.get(product.child("id_producteur").getValue(Long.class));
         if (producteur != null) {
-            Double latitude = producteur.child("latitude").getValue(Double.class), longitude = producteur.child("longitude").getValue(Double.class);
+            Double latitude = producteur.child("latitude").getValue(Double.class);
+            Double longitude = producteur.child("longitude").getValue(Double.class);
             if (latitude != null && longitude != null) {
                 double a = (1 - Math.cos(Math.toRadians(latitude - mLocation.latitude))
                         + Math.cos(Math.toRadians(mLocation.latitude)) * Math.cos(Math.toRadians(latitude))

@@ -77,6 +77,9 @@ public class ProducteurActivity extends AppCompatActivity {
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         myRef = FirebaseDatabase.getInstance(" https://miam-proche-9fb82-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
+        findViewById(R.id.map_button).setOnClickListener(v -> startActivity(new Intent(this, MapActivity.class)));
+        findViewById(R.id.search_button).setOnClickListener(v -> startActivity(new Intent(this, SearchableActivity.class)));
+        findViewById(R.id.logout_button).setOnClickListener(v -> startActivity(new Intent(this, LoginPage.class)));
 
         SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         String idProducteur = prefs.getString("id_producteur", "1");
