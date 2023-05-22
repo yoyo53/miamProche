@@ -33,7 +33,7 @@ public class ProductPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         id_product = getIntent().getStringExtra("productID");
         if(id_product == null)
-            id_product = "1";
+            id_product = "0";
         fetchData();
 
         setContentView(R.layout.activity_product_page);
