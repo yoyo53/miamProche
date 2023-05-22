@@ -28,8 +28,7 @@
         android:text ="@string/go_to"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnPrimary"
         android:backgroundTint="?attr/colorPrimary"
         android:layout_marginEnd="5dp"/>
-
 </RelativeLayout>
