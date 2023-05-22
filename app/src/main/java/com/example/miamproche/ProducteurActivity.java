@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -157,6 +158,15 @@ public class ProducteurActivity extends AppCompatActivity {
                 String quantiteProduit = mQuantiteEditText.getText().toString().trim();
                 String prixProduit = mPrixEditText.getText().toString().trim();
                 String descriptionProduit = mDescriptionEditText.getText().toString().trim();
+
+                if (TextUtils.isEmpty(nomProduit) || TextUtils.isEmpty(quantiteProduit) || TextUtils.isEmpty(prixProduit) || TextUtils.isEmpty(descriptionProduit)) {
+                    Toast.makeText(getApplicationContext(), "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (imageUri == null) {
+                    Toast.makeText(getApplicationContext(), "Veuillez sélectionner une photo", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 addProduct(descriptionProduit, idProducteur, nomProduit, quantiteProduit, prixProduit, imageUri);
             }
