@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapActivity"
+    tools:context=".ProductPage"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -57,13 +57,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductPage">
+    android:background="@drawable/gradient1" >
 
     <Button
         android:id="@+id/button_go"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/rounded_corner"
         android:text="@string/go"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.08"
@@ -72,15 +71,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.97"
         app:layout_constraintWidth_percent="0.25" />
-
-    <RelativeLayout
-        android:id="@+id/rootRL"
-        android:layout_width="1080dp"
-        android:layout_height="720dp"
-
-        android:background="@drawable/gradient1"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/product_img"
@@ -105,6 +95,7 @@
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.1"
         android:textSize="15sp"
+        android:textColor="@android:color/tab_indicator_text"
 
         android:background="@drawable/rounded_corner"
         android:justificationMode="inter_word"
@@ -115,14 +106,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.115" />
 
-
-
     <TextView
         android:id="@+id/textView_description"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.24"
         android:textSize="11sp"
+        android:textColor="@android:color/tab_indicator_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/product_img"
         app:layout_constraintRight_toRightOf="@+id/product_img"
@@ -152,6 +142,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.26"
+        android:textColor="@android:color/tab_indicator_text"
 
         android:justificationMode="inter_word"
         android:background="@drawable/rounded_corner"
@@ -195,6 +186,7 @@
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:textColor="@android:color/tab_indicator_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/view_suggestion1_IV"
             app:layout_constraintRight_toLeftOf="@+id/view_suggestion1_B"
@@ -245,6 +237,7 @@
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:textColor="@android:color/tab_indicator_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/view_suggestion2_IV"
             app:layout_constraintRight_toLeftOf="@+id/view_suggestion2_B"
@@ -295,6 +288,7 @@
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:textColor="@android:color/tab_indicator_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/view_suggestion3_IV"
             app:layout_constraintRight_toLeftOf="@+id/view_suggestion3_B"
@@ -314,8 +308,6 @@
             android:text ="@string/go_to" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
     <TextView
         android:id="@+id/product_name"
         android:layout_width="0dp"
@@ -325,6 +317,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
+        android:textColor="@android:color/tab_indicator_text"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/product_img"
